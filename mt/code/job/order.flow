@@ -1,0 +1,54 @@
+nodes:
+
+  - name: order_full
+    type: command
+    config:
+      command: bash  order_full.sh
+
+  - name: order_full_incr
+    type: command
+    config:
+      command: bash  order_full_incr.sh
+
+  - name: order_full_incr_addpartition
+    type: command
+    dependsOn:
+      - order_full_incr
+    config:
+      command: bash order_full_incr_addpartition.sh
+
+  - name: ods2dwd_order
+    type: command
+    dependsOn:
+      - order_full
+      - order_full_incr_addpartition
+    config:
+      command: bash ods2dwd_order.sh
+
+  - name: dwd2dm_order
+    type: command
+    dependsOn:
+      - ods2dwd_order
+    config:
+      command: bash dwd2dm_order.sh
+
+  - name: dwd2dm_order_basic
+    type: command
+    dependsOn:
+      - ods2dwd_order
+    config:
+      command: bash dwd2dm_order_basic.sh
+
+  - name: dm2mysql_order
+    type: command
+    dependsOn:
+      - dwd2dm_order
+    config:
+      command: bash dm2mysql_order.sh
+  
+  - name: dm2mysql_order_basic
+    type: command
+    dependsOn:
+      - dwd2dm_order_basic
+    config:
+      command: bash dm2mysql_order_basic.sh
